@@ -1,0 +1,46 @@
+unit uLoginController;
+
+interface
+
+uses DM_USUARIOS, DM_CONEXAO,
+Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Data.DB,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+  type
+  TLoginController = class
+  public
+  function loginValido(usuario: String; senha: String): Boolean;
+
+  end;
+
+
+implementation
+
+function TLoginController.loginValido(usuario: String; senha: String): Boolean;
+begin
+
+    Result := False;
+    try
+      if not DM_CONEXAO.dmConexao.sqlConexao.Connected then
+        DM_CONEXAO.dmConexao.sqlConexao.Connected := True;
+    // Caso o componente ConLOGIN não esteja conectado ao BD
+        DM_USUARIO.CDS_USUARIOS.Close;
+        //DM_USUARIO.CDS_USUARIOS.Open;
+        DM_USUARIO.CDS_LOGIN.ParamByName('USUARIO').AsString :=
+                  AnsiUpperCase(Trim(usuario));
+        DM_USUARIO.CDS_LOGIN.ParamByName('SENHA').AsString :=
+          Trim(senha);
+        DM_USUARIO.CDS_USUARIOS.Open;
+
+      if not DM_USUARIO.CDS_USUARIOS.IsEmpty then
+          Result := True;
+    finally
+       //FreeAndNil(DM_CONEXAO);
+       FreeAndNil(DM_USUARIO);
+    end;
+
+
+end;
+
+end.

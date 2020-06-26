@@ -1,0 +1,15 @@
+unit uCategoriaModel;
+
+interface
+uses System.SysUtils;
+type
+         TCategoria = class
+
+         end;
+         public
+                  property Codigo: Integer read getCodigo write setCodigo;
+                  property Descricao: String read getDescricao write SetDescricao;
+
+implementation
+
+end.

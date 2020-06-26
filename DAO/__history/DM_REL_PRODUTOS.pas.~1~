@@ -1,0 +1,28 @@
+unit DM_REL_PRODUTOS;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, DM_CONEXAO, frxClass, frxExportBaseDialog,
+  frxExportPDF;
+
+type
+  TDataModule1 = class(TDataModule)
+    frxPDFExport1: TfrxPDFExport;
+    frxR_Clientes: TfrxReport;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DataModule1: TDataModule1;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+end.

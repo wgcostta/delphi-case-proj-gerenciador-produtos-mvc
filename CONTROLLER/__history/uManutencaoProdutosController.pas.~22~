@@ -1,0 +1,79 @@
+unit uManutencaoProdutosController;
+
+interface
+
+uses uProdutoModel, System.SysUtils, DM_GERAL_SQLS;
+
+type
+  TManutencaoProdutos = class
+  private
+
+  public
+
+    function AumentarMargem(sCategoria:String;sMargem : String): Boolean;
+    function DiminuirMargem(sCategoria:String;sMargem : String): Boolean;
+
+  end;
+
+implementation
+
+{ TManutencaoProdutos }
+
+function TManutencaoProdutos.AumentarMargem(sCategoria:String;sMargem : String): Boolean;
+var sSQLGeral : String;
+  begin
+  if sCategoria='0' then
+  begin
+    sSQLGeral :=
+    ' update produto set '+
+
+    ' ULTIMO_PRECO = PRECO, '+
+    ' DATA_ATUALIZACAO = CURDATE(), '+
+    ' PRECO = ((CONCAT("1.",%s)*PRECO)) ' ;
+   Result := DM_GERAL.Executar(Format(sSQLGeral, [sMargem]));
+  end
+  else
+  begin
+    sSQLGeral :=
+      ' update produto set '+
+
+      ' ULTIMO_PRECO = PRECO, '+
+      ' DATA_ATUALIZACAO = CURDATE(), '+
+      ' PRECO = ((CONCAT("1.",%s)*PRECO)) ' +
+    ' where ' +
+    ' (CODIGO_CATEGORIA = %s OR CODIGO_CATEGORIA=0);';
+     Result := DM_GERAL.Executar(Format(sSQLGeral, [sMargem,sCategoria]));
+  end;
+
+end;
+
+
+function TManutencaoProdutos.DiminuirMargem(sCategoria:String;sMargem : String): Boolean;
+var sSQLGeral : String;
+  begin
+  if sCategoria='0' then
+  begin
+    sSQLGeral :=
+    ' update produto set '+
+
+    ' ULTIMO_PRECO = PRECO, '+
+    ' DATA_ATUALIZACAO = CURDATE(), '+
+    ' PRECO = ROUND(((CONCAT("0.",%s)-1)*-1)*PRECO,2) ' ;
+   Result := DM_GERAL.Executar(Format(sSQLGeral, [sMargem]));
+  end
+  else
+  begin
+    sSQLGeral :=
+      ' update produto set '+
+
+      ' ULTIMO_PRECO = PRECO, '+
+      ' DATA_ATUALIZACAO = CURDATE(), '+
+      ' PRECO = ROUND(((CONCAT("0.",%s)-1)*-1)*PRECO,2)  ' +
+    ' where ' +
+    ' (CODIGO_CATEGORIA = %s);';
+     Result := DM_GERAL.Executar(Format(sSQLGeral, [sMargem,sCategoria]));
+  end;
+
+end;
+
+end.

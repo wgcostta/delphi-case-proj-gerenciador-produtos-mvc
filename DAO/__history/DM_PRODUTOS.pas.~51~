@@ -1,0 +1,176 @@
+unit DM_PRODUTOS;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.FMTBcd, Data.DB, Data.SqlExpr,
+  DM_CONEXAO,
+  Datasnap.DBClient, Datasnap.Provider, uProdutoModel;
+
+type
+  TDM_PRODUTO = class(TDataModule)
+    sqlPesquisar: TSQLDataSet;
+    dspPesquisar: TDataSetProvider;
+    cdsPesquisar: TClientDataSet;
+    cdsPesquisarCODIGO: TIntegerField;
+    cdsPesquisarDESCRICAO: TStringField;
+    cdsPesquisarCODIGO_CATEGORIA: TIntegerField;
+    cdsPesquisarPRECO: TSingleField;
+    cdsPesquisarDATA_CADASTRO: TSingleField;
+    cdsPesquisarDATA_ATUALIZACAO: TDateField;
+    cdsPesquisarSITUACAO: TStringField;
+    SQL_PRODUTOS: TSQLDataSet;
+    DSP_PRODUTOS: TDataSetProvider;
+    CDS_PRODUTOS: TClientDataSet;
+    SQL_PRODUTOSCODIGO: TIntegerField;
+    SQL_PRODUTOSDESCRICAO: TStringField;
+    SQL_PRODUTOSCODIGO_CATEGORIA: TIntegerField;
+    SQL_PRODUTOSPRECO: TSingleField;
+    SQL_PRODUTOSULTIMO_PRECO: TSingleField;
+    SQL_PRODUTOSDATA_CADASTRO: TDateField;
+    SQL_PRODUTOSDATA_ATUALIZACAO: TDateField;
+    SQL_PRODUTOSSITUACAO: TStringField;
+    CDS_PRODUTOSCODIGO: TIntegerField;
+    CDS_PRODUTOSDESCRICAO: TStringField;
+    CDS_PRODUTOSCODIGO_CATEGORIA: TIntegerField;
+    CDS_PRODUTOSPRECO: TSingleField;
+    CDS_PRODUTOSULTIMO_PRECO: TSingleField;
+    CDS_PRODUTOSDATA_CADASTRO: TDateField;
+    CDS_PRODUTOSDATA_ATUALIZACAO: TDateField;
+    CDS_PRODUTOSSITUACAO: TStringField;
+    SQL_GERAL: TSQLDataSet;
+    DSP_GERAL: TDataSetProvider;
+    CDS_GERAL: TClientDataSet;
+    SQL_DIMINUIR_MARGEM: TSQLDataSet;
+    procedure cdsPesquisarAfterPost(DataSet: TDataSet);
+    procedure CDS_PRODUTOSAfterPost(DataSet: TDataSet);
+    procedure CDS_GERALAfterApplyUpdates(Sender: TObject;
+      var OwnerData: OleVariant);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure Pesquisar(sNome: String);
+    procedure CarregarProduto(oProduto: TProduto; iCodigo: Integer);
+    // usando function para vermos se foi inserido ou não
+    function AumentarMargem(oProduto: TProduto; out sErro: String): Boolean;
+    function DiminuirMargem(oProduto: TProduto; out sErro: String): Boolean;
+
+  end;
+
+var
+  DM_PRODUTO: TDM_PRODUTO;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+{ TDM_PRODUTO }
+
+function TDM_PRODUTO.AumentarMargem(oProduto: TProduto; out sErro: String): Boolean;
+begin
+
+    begin
+
+        SQL_GERAL.Params[0].AsString := oProduto.Preco;
+        SQL_GERAL.Params[1].AsInteger := oProduto.CodigoCategoria;
+
+      try
+      SQL_GERAL.ExecSQL();
+      Result := True;
+
+      except on E: Exception do
+        begin
+          sErro := 'Ocorreu um erro ao atualizar o cliente:' + sLineBreak + E.Message;
+          Result := False;
+        end;
+      end;
+
+    end;
+end;
+
+function TDM_PRODUTO.DiminuirMargem(oProduto: TProduto; out sErro: String): Boolean;
+begin
+
+    begin
+
+        SQL_DIMINUIR_MARGEM.Params[0].AsString := oProduto.Preco;
+        SQL_DIMINUIR_MARGEM.Params[1].AsInteger := oProduto.CodigoCategoria;
+
+      try
+      SQL_DIMINUIR_MARGEM.ExecSQL();
+      Result := True;
+
+      except on E: Exception do
+        begin
+          sErro := 'Ocorreu um erro ao atualizar o cliente:' + sLineBreak + E.Message;
+          Result := False;
+        end;
+      end;
+
+    end;
+end;
+
+procedure TDM_PRODUTO.CarregarProduto(oProduto: TProduto; iCodigo: Integer);
+var
+  sqlProduto: TSQLDataSet;
+begin
+  sqlProduto := TSQLDataSet.Create(nil);
+  try
+    with sqlProduto do
+    begin
+      SQLConnection := dmConexao.sqlConexao;
+      CommandText := 'select * from produto where (codigo=' +
+        IntToStr(iCodigo) + ')';
+      Open;
+      with oProduto do
+      begin
+        Codigo := FieldByName('CODIGO').AsInteger;
+        Descricao := FieldByName('DESCRICAO').AsString;
+        Situacao := FieldByName('SITUACAO').AsString;
+        CodigoCategoria := FieldByName('CODIGO_CATEGORIA').AsInteger;
+        Preco := FieldByName('PRECO').AsString;
+        UltimoPreco := FieldByName('ULTIMO_PRECO').AsCurrency;
+        DataCadastro := FieldByName('DATA_CADASTRO').AsString;
+        DataAtualizacao := FieldByName('DATA_ATUALIZACAO').AsString;
+
+      end;
+    end;
+
+  finally
+    FreeAndNil(sqlProduto);
+  end;
+end;
+
+procedure TDM_PRODUTO.cdsPesquisarAfterPost(DataSet: TDataSet);
+begin
+  CDS_PRODUTOS.ApplyUpdates(-1);
+end;
+
+procedure TDM_PRODUTO.CDS_GERALAfterApplyUpdates(Sender: TObject;
+  var OwnerData: OleVariant);
+begin
+    CDS_PRODUTOS.ApplyUpdates(-1);
+end;
+
+procedure TDM_PRODUTO.CDS_PRODUTOSAfterPost(DataSet: TDataSet);
+begin
+  CDS_PRODUTOS.ApplyUpdates(-1);
+end;
+
+
+
+
+procedure TDM_PRODUTO.Pesquisar(sNome: String);
+begin
+  // if cdsPesquisar.Active then
+  cdsPesquisar.DisableControls;
+  cdsPesquisar.Close;
+  // cdsPesquisar.Params[0]     indice do parametro zero, ou por nome:
+  cdsPesquisar.ParamByName('DESCRICAO').AsString := '%' + sNome + '%';
+  cdsPesquisar.Open;
+  cdsPesquisar.First;
+  cdsPesquisar.EnableControls;
+end;
+
+end.

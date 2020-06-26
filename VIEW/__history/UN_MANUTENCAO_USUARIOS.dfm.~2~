@@ -1,0 +1,17 @@
+object UN_MANUTENCAO_USUARIO: TUN_MANUTENCAO_USUARIO
+  Left = 0
+  Top = 0
+  Caption = 'UN_MANUTENCAO_USUARIO'
+  ClientHeight = 481
+  ClientWidth = 834
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+end

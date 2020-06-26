@@ -1,0 +1,438 @@
+unit UN_PRODUTOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls,
+  Vcl.StdCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids,
+  DM_PRODUTOS, uProdutosController,
+  uProdutoModel, System.Classes;
+
+type
+  TOperacao = (opNovo, opAlterar, opNavegar);
+
+  TFRM_PRODUTOS = class(TForm)
+
+    StatusBar1: TStatusBar;
+    pgPrincipal: TPageControl;
+    tbProdutos: TTabSheet;
+    Panel3: TPanel;
+    btnNovo: TButton;
+    btnDetalhar: TButton;
+    btnExcluir: TButton;
+    tb_Dados: TTabSheet;
+    Label1: TLabel;
+    Label5: TLabel;
+    Label8: TLabel;
+    Label10: TLabel;
+    edtCategoria: TEdit;
+    edtPreco: TEdit;
+    edtDescricao: TLabeledEdit;
+    Panel4: TPanel;
+    btnListar: TButton;
+    btnAlterar: TButton;
+    btnGravar: TButton;
+    btnCancelar: TButton;
+    edtCodigo: TEdit;
+    Panel1: TPanel;
+    btnFechar: TButton;
+    Panel2: TPanel;
+    btnPesquisar: TButton;
+    edtPesquisar: TLabeledEdit;
+    Timer1: TTimer;
+    edtDataAtualizacao: TEdit;
+    edtDataCadastro: TEdit;
+    Label2: TLabel;
+    edtUltimoPreco: TEdit;
+    Label3: TLabel;
+    cbSituacao: TComboBox;
+    Label4: TLabel;
+    dsPesquisa: TDataSource;
+    DBGrid1: TDBGrid;
+    dsProdutos: TDataSource;
+    Button1: TButton;
+    Panel5: TPanel;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure btnFecharClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure btnPesquisarClick(Sender: TObject);
+    procedure btnListarClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnDetalharClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DBGrid1DblClick(Sender: TObject);
+  private
+    FOperacao: TOperacao;
+    procedure Novo;
+    procedure Detalhar;
+    procedure Configuracoes;
+    procedure Pesquisar;
+    procedure CarregarProduto;
+    procedure Listar;
+    procedure Alterar;
+    procedure Excluir;
+    procedure Inserir;
+    procedure Gravar;
+    procedure HabilitarControles(aOperacao: TOperacao);
+  public
+    { Public declarations }
+  end;
+
+var
+  FRM_PRODUTOS: TFRM_PRODUTOS;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFRM_PRODUTOS.Alterar;
+var
+  oProduto: TProduto;
+  oProdutoController: TProdutoController;
+  sErro: String;
+begin
+  oProdutoController := TProdutoController.Create;
+  oProduto := TProduto.Create;
+  try
+    with oProduto do
+    begin
+      Codigo := StrToIntDef(edtCodigo.Text, 0);
+      Descricao := edtDescricao.Text;
+      CodigoCategoria := StrToIntDef(edtCategoria.Text, 0);
+      // mostrar Descricao da Categoria selecionada.
+      case cbSituacao.ItemIndex of
+        0:
+          Situacao := 'A';
+        1:
+          Situacao := 'I';
+      end;
+      // Situacao := cbTipo.Text  ;
+      Preco := edtPreco.Text;
+      UltimoPreco := StrToCurr(edtUltimoPreco.Text); // Atualiza no banco
+      DataCadastro := edtDataCadastro.Text; // Atualiza no Banco
+      DataAtualizacao := edtDataAtualizacao.Text; // Via banco tambem
+    end;
+    if oProdutoController.Alterar(oProduto, sErro) = False then
+      raise Exception.Create(sErro);
+  finally
+    FreeAndNil(oProdutoController);
+    FreeAndNil(oProduto);
+  end;
+
+end;
+
+procedure TFRM_PRODUTOS.btnAlterarClick(Sender: TObject);
+begin
+  Alterar;
+end;
+
+procedure TFRM_PRODUTOS.btnCancelarClick(Sender: TObject);
+begin
+  HabilitarControles(opNavegar);
+end;
+
+procedure TFRM_PRODUTOS.btnDetalharClick(Sender: TObject);
+begin
+  Detalhar;
+end;
+
+procedure TFRM_PRODUTOS.btnExcluirClick(Sender: TObject);
+begin
+  Excluir;
+end;
+
+procedure TFRM_PRODUTOS.btnFecharClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFRM_PRODUTOS.btnGravarClick(Sender: TObject);
+begin
+  Gravar;
+end;
+
+procedure TFRM_PRODUTOS.btnListarClick(Sender: TObject);
+begin
+  Listar;
+end;
+
+procedure TFRM_PRODUTOS.btnNovoClick(Sender: TObject);
+begin
+  Novo;
+  HabilitarControles(opNovo);
+end;
+
+procedure TFRM_PRODUTOS.btnPesquisarClick(Sender: TObject);
+begin
+  //dsProdutos.DataSet.Close;
+  Pesquisar;
+  //dsProdutos.DataSet.Open;
+  //ShowMessage(IntToStr(DM_PRODUTO.cdsPesquisar.RecordCount));
+end;
+
+procedure TFRM_PRODUTOS.Button1Click(Sender: TObject);
+begin
+   Detalhar;
+end;
+
+procedure TFRM_PRODUTOS.CarregarProduto;
+var
+  oProduto: TProduto;
+  oProdutoController: TProdutoController;
+begin
+  oProdutoController := TProdutoController.Create;
+  oProduto := TProduto.Create;
+  try
+    oProdutoController.CarregarProduto(oProduto,
+      dsPesquisa.DataSet.FieldByName('codigo').AsInteger);
+    with oProduto do
+    begin
+      edtCodigo.Text := IntToStr(Codigo);
+      edtDescricao.Text := Descricao;
+      edtPreco.Text := Preco;
+      if Situacao = 'A' then
+        cbSituacao.ItemIndex := 0
+      else if Situacao = 'I' then
+        cbSituacao.ItemIndex := 1;
+
+      edtUltimoPreco.Text := CurrToStr(UltimoPreco);
+      edtCategoria.Text := IntToStr(CodigoCategoria);
+      edtDataCadastro.Text := DataCadastro;
+      edtDataAtualizacao.Text := DataAtualizacao;
+    end;
+  finally
+    FreeAndNil(oProdutoController);
+    FreeAndNil(oProduto);
+  end;
+end;
+
+procedure TFRM_PRODUTOS.Configuracoes;
+begin
+  tbProdutos.TabVisible := False;
+  tb_Dados.TabVisible := False;
+  pgPrincipal.ActivePage := tbProdutos;
+end;
+
+procedure TFRM_PRODUTOS.DBGrid1DblClick(Sender: TObject);
+begin
+  Detalhar;
+end;
+
+procedure TFRM_PRODUTOS.Detalhar;
+begin
+  CarregarProduto;
+  HabilitarControles(opNavegar);
+
+  FOperacao := opNavegar;
+  // Apenas navegar nos dados, sem edição
+  // (Captura o ID do produto que esta na tela de pesquisa para trazer na aba de dados
+  pgPrincipal.ActivePage := tb_Dados;
+end;
+
+procedure TFRM_PRODUTOS.Excluir;
+var
+  sErro: String;
+  oProdutoController: TProdutoController;
+begin
+  oProdutoController := TProdutoController.Create;
+  try
+    if (DM_PRODUTO.cdsPesquisar.Active) and
+      (DM_PRODUTO.cdsPesquisar.RecordCount > 0) then
+    // verifica se tem algum registro na tela. caso não tenha nada na tela, nçao tenta excluir.
+    begin
+      if MessageDlg('Deseja realmente excluir esse Produto', mtConfirmation,
+        [mbYes, mbNo], 0) = IDYES then
+        if oProdutoController.Excluir(DM_PRODUTO.cdsPesquisarCODIGO.AsInteger,
+          sErro) = False then
+          raise Exception.Create('sErro');
+      oProdutoController.Pesquisar(edtPesquisar.Text);
+
+    end
+    else
+      raise Exception.Create('Não há registro para ser excluido');
+  finally
+    FreeAndNil(oProdutoController);
+  end;
+end;
+
+procedure TFRM_PRODUTOS.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // FreeAndNil(UN_PRODUTO);
+  Close;
+end;
+
+procedure TFRM_PRODUTOS.FormCreate(Sender: TObject);
+begin
+  DM_PRODUTO := TDM_PRODUTO.Create(nil);
+
+  dsProdutos.DataSet := DM_PRODUTO.cdsPesquisar;
+
+end;
+
+procedure TFRM_PRODUTOS.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(DM_PRODUTO);
+end;
+
+procedure TFRM_PRODUTOS.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    Key := #0;
+    Perform(WM_NEXTDLGCTL, 0, 0);
+  end;
+end;
+
+procedure TFRM_PRODUTOS.FormShow(Sender: TObject);
+begin
+  {
+    DM_Controle.cdsControleDeAcesso.Close;
+    DM_Controle.cdsControleDeAcesso.Open;
+  }
+  DM_PRODUTO.sqlPesquisar.Close;
+  DM_PRODUTO.sqlPesquisar.Open;
+  Configuracoes;
+  // chama o metodo de configurações e ativa as telas.
+end;
+
+procedure TFRM_PRODUTOS.Gravar;
+var
+  oProdutoController: TProdutoController;
+begin
+  oProdutoController := TProdutoController.Create;
+  try
+    case FOperacao of
+      // verifica qual valor esta dentro de FOperacao e seleciono Insert ou Update
+      opNovo:
+        Inserir;
+      opAlterar:
+        Alterar;
+    end;
+    oProdutoController.Pesquisar(edtPesquisar.Text);
+  finally
+    FreeAndNil(oProdutoController);
+  end;
+
+end;
+
+procedure TFRM_PRODUTOS.HabilitarControles(aOperacao: TOperacao);
+begin
+  // Desabilitando e habilitando opções
+  case aOperacao of
+    opNovo, opAlterar:
+      begin
+        edtDescricao.Enabled := True;
+        cbSituacao.Enabled := True;
+        edtPreco.Enabled := True;
+        edtUltimoPreco.Enabled := False;
+        edtCategoria.Enabled := True;
+        btnListar.Enabled := False;
+        btnFechar.Enabled := False;
+        btnAlterar.Enabled := False;
+        btnGravar.Enabled := True;
+        btnCancelar.Enabled := True;
+      end;
+    opNavegar:
+      begin
+        edtDescricao.Enabled := False;
+        cbSituacao.Enabled := False;
+        edtPreco.Enabled := False;
+        edtUltimoPreco.Enabled := False;
+        edtCategoria.Enabled := False;
+        btnListar.Enabled := True;
+        btnFechar.Enabled := True;
+        btnAlterar.Enabled := True;
+        btnGravar.Enabled := False;
+        btnCancelar.Enabled := False;
+      end;
+  end;
+end;
+
+procedure TFRM_PRODUTOS.Inserir;
+var
+  oProduto: TProduto;
+  oProdutoController: TProdutoController;
+  sErro: String;
+begin
+  oProdutoController := TProdutoController.Create;
+  oProduto := TProduto.Create;
+  try
+    with oProduto do
+    begin
+      Codigo := 0;
+      Descricao := edtDescricao.Text;
+      CodigoCategoria := StrToIntDef(edtCategoria.Text, 0);
+      // mostrar Descricao da Categoria selecionada.
+      case cbSituacao.ItemIndex of
+        0:
+          Situacao := 'A';
+        1:
+          Situacao := 'I';
+      end;
+      // Situacao := cbTipo.Text  ;
+      Preco := edtPreco.Text;
+      UltimoPreco := StrToCurr(edtUltimoPreco.Text); // Atualiza no banco
+      DataCadastro := edtDataCadastro.Text; // Atualiza no Banco
+      DataAtualizacao := edtDataAtualizacao.Text; // Via banco tambem
+
+    end;
+    if oProdutoController.Inserir(oProduto, sErro) = False then
+      raise Exception.Create(sErro);
+
+  finally
+    FreeAndNil(oProdutoController);
+    FreeAndNil(oProduto);
+  end;
+
+end;
+
+procedure TFRM_PRODUTOS.Listar;
+begin
+  pgPrincipal.ActivePage := tbProdutos;
+end;
+
+procedure TFRM_PRODUTOS.Novo;
+begin
+  FOperacao := opNovo;
+  pgPrincipal.ActivePage := tb_Dados;
+end;
+
+procedure TFRM_PRODUTOS.Pesquisar;
+var
+  oProdutoController: TProdutoController;
+begin
+  oProdutoController := TProdutoController.Create;
+  try
+    oProdutoController.Pesquisar(edtPesquisar.Text);
+    // Passa o valor do edt para o metodo Pesquisa
+  finally
+    FreeAndNil(oProdutoController);
+    // Limpando da memória
+  end;
+
+end;
+
+procedure TFRM_PRODUTOS.Timer1Timer(Sender: TObject);
+begin
+  StatusBar1.Panels[3].Text :=
+    FormatDateTime('dddd , dd " de " mmmm "de" yyyy', Now);
+  // FormatDateTime('dd/mm/yyyy',Now);
+  // FormatDateTime('dddd' , dd " de " 'mmmm' "de" 'yyyy',Now)
+  StatusBar1.Panels[4].Text := 'Hora: ' + FormatDateTime('hh:mm:ss', Now);
+end;
+
+end.

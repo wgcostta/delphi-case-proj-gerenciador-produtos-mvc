@@ -1,0 +1,25 @@
+object DM_GERAL: TDM_GERAL
+  OldCreateOrder = False
+  Height = 245
+  Width = 158
+  object CDS_GERAL: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'DSP_GERAL'
+    Left = 77
+    Top = 168
+  end
+  object DSP_GERAL: TDataSetProvider
+    DataSet = SQL_GERAL
+    Left = 77
+    Top = 104
+  end
+  object SQL_GERAL: TSQLDataSet
+    CommandText = 'SHOW TABLES;'
+    MaxBlobSize = -1
+    Params = <>
+    SQLConnection = dmConexao.sqlConexao
+    Left = 77
+    Top = 24
+  end
+end

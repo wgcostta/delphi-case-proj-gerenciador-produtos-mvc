@@ -1,0 +1,66 @@
+﻿unit uProdutoController;
+
+     // Classe Controle    servirá apenas para intermediar.
+interface
+  uses  u_ClienteModel, DM_CLIENTES, System.SysUtils;
+  type
+  TClienteController = class
+    public
+    constructor Create;
+    destructor Destroy; override; // sobrescrevendo o metodo
+    procedure CarregarCliente(oCliente: TCliente; iCodigo: Integer);
+    procedure Pesquisar(sNome : String);
+    function Inserir(oCliente: TCliente; var sErro: String): Boolean;
+    function Alterar(oCliente: TCliente; var sErro: String): Boolean;
+    function Excluir(iCodigo: Integer; var sErro: String): Boolean;
+  end;
+
+implementation
+
+{ TClienteController }
+
+
+
+function TClienteController.Alterar(oCliente: TCliente;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Alterar(oCliente,sErro);
+end;
+
+procedure TClienteController.CarregarCliente(oCliente: TCliente;
+  iCodigo: Integer);
+begin
+    dmClientes.CarregarCLiente(oCliente, iCodigo);
+end;
+
+constructor TClienteController.Create;
+begin
+    //dmClientes := TdmClientes.Create(nil);
+    // mudando para a view (OnCreate), dando Access Violation
+end;
+
+destructor TClienteController.Destroy;
+begin
+  //FreeAndNil(dmClientes);
+  inherited;
+end;
+
+function TClienteController.Excluir(iCodigo: Integer;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Excluir(iCodigo,sErro);
+end;
+
+function TClienteController.Inserir(oCliente: TCliente;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Inserir(oCliente,sErro);
+end;
+
+procedure TClienteController.Pesquisar(sNome: String);
+begin
+    dmClientes.Pesquisar(sNome);
+end;
+
+end.
+

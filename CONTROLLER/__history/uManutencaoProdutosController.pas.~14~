@@ -1,0 +1,33 @@
+unit uManutencaoProdutosController;
+
+interface
+
+uses uProdutoModel, DM_PRODUTOS, System.SysUtils;
+  type
+  TManutencaoProdutos = class
+  private
+
+  public
+
+  function AumentarMargem(oProdutoModel : TProduto; var sErro: String): Boolean;
+  function DiminuirMargem(oProdutoModel : TProduto; var sErro: String): Boolean;
+
+  end;
+implementation
+
+{ TManutencaoProdutos }
+
+function TManutencaoProdutos.AumentarMargem(oProdutoModel : TProduto;
+var
+    sErro: String): Boolean;
+begin
+    Result := DM_PRODUTO.AumentarMargem(oProdutoModel, sErro);
+end;
+
+function TManutencaoProdutos.DiminuirMargem(oProdutoModel: TProduto;
+  var sErro: String): Boolean;
+begin
+     Result := DM_PRODUTO.DiminuirMargem(oProdutoModel, sErro);
+end;
+
+end.

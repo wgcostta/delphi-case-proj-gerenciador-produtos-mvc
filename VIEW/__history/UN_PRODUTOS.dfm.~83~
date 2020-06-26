@@ -1,0 +1,459 @@
+object FRM_PRODUTOS: TFRM_PRODUTOS
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'Cadastro de Produtos'
+  ClientHeight = 491
+  ClientWidth = 844
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 17
+  object SpeedButton1: TSpeedButton
+    Left = 120
+    Top = 208
+    Width = 23
+    Height = 22
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 472
+    Width = 844
+    Height = 19
+    Panels = <
+      item
+        Alignment = taCenter
+        Text = 'Sistema Gerencial de Produtos'
+        Width = 180
+      end
+      item
+        Alignment = taCenter
+        Text = 'Desenvolvido por Wagner Costa'
+        Width = 180
+      end
+      item
+        Text = 'Usuario: VSM'
+        Width = 90
+      end
+      item
+        Alignment = taCenter
+        Text = 'Data:'
+        Width = 200
+      end
+      item
+        Alignment = taCenter
+        Text = 'Hora:'
+        Width = 50
+      end>
+  end
+  object pgPrincipal: TPageControl
+    Left = 0
+    Top = 0
+    Width = 844
+    Height = 472
+    ActivePage = tb_Dados
+    Align = alClient
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    object tbProdutos: TTabSheet
+      Caption = 'Listagem'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel3: TPanel
+        Left = 0
+        Top = 380
+        Width = 836
+        Height = 60
+        Align = alBottom
+        BevelOuter = bvNone
+        Color = clSilver
+        ParentBackground = False
+        TabOrder = 0
+        object btnNovo: TButton
+          Left = 513
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Novo Registro'
+          Caption = #61694
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          OnClick = btnNovoClick
+        end
+        object btnDetalhar: TButton
+          Left = 594
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Detalhar'
+          Caption = #61564
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          OnClick = btnDetalharClick
+        end
+        object btnFechar: TButton
+          Left = 675
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Sair'
+          Caption = #62763
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Solid'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 2
+          OnClick = btnFecharClick
+        end
+      end
+      object DBGrid1: TDBGrid
+        AlignWithMargins = True
+        Left = 3
+        Top = 63
+        Width = 830
+        Height = 314
+        Align = alClient
+        DataSource = dsProdutos
+        DrawingStyle = gdsGradient
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -13
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        OnDblClick = DBGrid1DblClick
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'CODIGO'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESCRICAO'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CODIGO_CATEGORIA'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'PRECO'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DATA_CADASTRO'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DATA_ATUALIZACAO'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'SITUACAO'
+            Visible = True
+          end>
+      end
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 836
+        Height = 60
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clSilver
+        ParentBackground = False
+        TabOrder = 2
+        object btnPesquisar: TButton
+          Left = 679
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Pesquisar'
+          Caption = #61454
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Solid'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          OnClick = btnPesquisarClick
+        end
+        object edtPesquisar: TLabeledEdit
+          Left = 7
+          Top = 22
+          Width = 365
+          Height = 25
+          EditLabel.Width = 59
+          EditLabel.Height = 17
+          EditLabel.Caption = 'Pesquisar:'
+          TabOrder = 1
+        end
+      end
+    end
+    object tb_Dados: TTabSheet
+      Caption = 'Consulta'
+      ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Label1: TLabel
+        Left = 260
+        Top = 86
+        Width = 52
+        Height = 17
+        Caption = 'Situa'#231#227'o:'
+      end
+      object Label2: TLabel
+        Left = 402
+        Top = 86
+        Width = 60
+        Height = 17
+        Caption = 'Categoria:'
+      end
+      object Panel4: TPanel
+        Left = 0
+        Top = 380
+        Width = 836
+        Height = 60
+        Align = alBottom
+        BevelOuter = bvNone
+        Color = clSilver
+        ParentBackground = False
+        TabOrder = 4
+        object btnListar: TButton
+          Left = 354
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Voltar'
+          Caption = #62297
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          OnClick = btnListarClick
+        end
+        object btnAlterar: TButton
+          Left = 435
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Editar'
+          Caption = #61508
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          OnClick = btnAlterarClick
+        end
+        object btnGravar: TButton
+          Left = 516
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Gravar'
+          Caption = #61639
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 2
+          OnClick = btnGravarClick
+        end
+        object btnCancelar: TButton
+          Left = 678
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Cancelar'
+          Caption = #61902
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Solid'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 3
+          OnClick = btnCancelarClick
+        end
+        object btnExcluir: TButton
+          Left = 597
+          Top = 3
+          Width = 75
+          Height = 55
+          Hint = 'Excluir'
+          Caption = #62189
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -40
+          Font.Name = 'Font Awesome 5 Free Regular'
+          Font.Style = []
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 4
+          OnClick = btnExcluirClick
+        end
+      end
+      object edtCodigo: TLabeledEdit
+        Left = 260
+        Top = 55
+        Width = 95
+        Height = 25
+        EditLabel.Width = 46
+        EditLabel.Height = 17
+        EditLabel.Caption = 'C'#243'digo:'
+        TabOrder = 5
+      end
+      object edtDataCadastro: TLabeledEdit
+        Left = 489
+        Top = 166
+        Width = 121
+        Height = 25
+        EditLabel.Width = 106
+        EditLabel.Height = 17
+        EditLabel.Caption = 'Data de Cadastro:'
+        TabOrder = 6
+      end
+      object edtDataAtualizacao: TLabeledEdit
+        Left = 489
+        Top = 226
+        Width = 121
+        Height = 25
+        EditLabel.Width = 119
+        EditLabel.Height = 17
+        EditLabel.Caption = 'Data de Atualiza'#231#227'o:'
+        TabOrder = 7
+      end
+      object edtUltimoPreco: TLabeledEdit
+        Left = 260
+        Top = 226
+        Width = 121
+        Height = 25
+        EditLabel.Width = 78
+        EditLabel.Height = 17
+        EditLabel.Caption = 'Ultimo Pre'#231'o:'
+        TabOrder = 8
+      end
+      object edtPreco: TLabeledEdit
+        Left = 260
+        Top = 166
+        Width = 121
+        Height = 25
+        EditLabel.Width = 36
+        EditLabel.Height = 17
+        EditLabel.Caption = 'Pre'#231'o:'
+        TabOrder = 3
+      end
+      object edtDescricao: TLabeledEdit
+        Left = 378
+        Top = 55
+        Width = 232
+        Height = 25
+        CharCase = ecUpperCase
+        EditLabel.Width = 60
+        EditLabel.Height = 17
+        EditLabel.Caption = 'Descri'#231#227'o:'
+        TabOrder = 0
+      end
+      object cbSituacao: TComboBox
+        Left = 260
+        Top = 109
+        Width = 121
+        Height = 25
+        TabOrder = 1
+        Text = 'Ativo'
+        Items.Strings = (
+          'Ativo'
+          'Inativo')
+      end
+      object cbCategoria: TDBLookupComboBox
+        Left = 402
+        Top = 109
+        Width = 208
+        Height = 25
+        BevelWidth = 10
+        KeyField = 'CODIGO'
+        ListField = 'DESCRICAO'
+        ListSource = DS_CATEGORIAS
+        TabOrder = 2
+      end
+    end
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 560
+    Top = 80
+  end
+  object dsProdutos: TDataSource
+    DataSet = DM_PRODUTO.CDSPESQUISAR
+    Left = 392
+    Top = 8
+  end
+  object DS_CATEGORIAS: TDataSource
+    DataSet = DM_CATEGORIA.CDS_CATEGORIAS
+    Left = 544
+    Top = 8
+  end
+end

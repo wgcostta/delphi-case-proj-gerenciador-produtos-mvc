@@ -1,0 +1,375 @@
+unit UN_CATEGORIAS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, System.UITypes,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.FMTBcd, Data.DB, Vcl.StdCtrls,
+  Vcl.Grids, Vcl.DBGrids, Data.SqlExpr, Data.DBXMySQL, Vcl.ExtCtrls,
+  Vcl.DBCtrls, DM_CATEGORIAS, Vcl.Mask, Vcl.ComCtrls, uCategoriaModel,
+  uCategoriasController;
+
+type
+  { Declarar as Operações }
+  TOperacao = (opNovo, opAlterar, opNavegar);
+
+  TFRM_CATEGORIAS = class(TForm)
+    DBGrid1: TDBGrid;
+    DS_CATEGORIA: TDataSource;
+    pgPrincipal: TPageControl;
+    tbProdutos: TTabSheet;
+    Panel3: TPanel;
+    btnNovo: TButton;
+    btnDetalhar: TButton;
+    tb_Dados: TTabSheet;
+    Label1: TLabel;
+    Label5: TLabel;
+    Panel4: TPanel;
+    btnListar: TButton;
+    btnAlterar: TButton;
+    btnGravar: TButton;
+    btnCancelar: TButton;
+    btnFechar: TButton;
+    edtCodigo: TEdit;
+    edtDescricao: TEdit;
+    Panel2: TPanel;
+    btnPesquisar: TButton;
+    edtPesquisar: TLabeledEdit;
+    btnExcluir: TButton;
+
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure DBGrid1DblClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnDetalharClick(Sender: TObject);
+    procedure btnListarClick(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+    procedure btnFecharClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnPesquisarClick(Sender: TObject);
+  private
+    { Métiodos Privados }
+    FOperacao: TOperacao;
+    procedure Novo;
+    procedure Detalhar;
+    procedure Configuracoes;
+    procedure Pesquisar;
+    procedure CarregarProduto;
+    procedure Listar;
+    procedure Alterar;
+    procedure Excluir;
+    procedure Inserir;
+    procedure Gravar;
+    procedure HabilitarControles(aOperacao: TOperacao);
+  public
+    { Public declarations }
+  end;
+
+var
+  FRM_CATEGORIAS: TFRM_CATEGORIAS;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFRM_CATEGORIAS.btnAlterarClick(Sender: TObject);
+begin
+  HabilitarControles(opAlterar);
+  FOperacao := opAlterar;
+end;
+
+procedure TFRM_CATEGORIAS.btnCancelarClick(Sender: TObject);
+begin
+  HabilitarControles(opNavegar);
+end;
+
+procedure TFRM_CATEGORIAS.btnDetalharClick(Sender: TObject);
+begin
+  Detalhar;
+end;
+
+procedure TFRM_CATEGORIAS.btnExcluirClick(Sender: TObject);
+begin
+  Excluir;
+  Listar;
+end;
+
+procedure TFRM_CATEGORIAS.btnFecharClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFRM_CATEGORIAS.btnGravarClick(Sender: TObject);
+begin
+  Gravar;
+  Listar;
+ // pgPrincipal.ActivePage := tbProdutos;
+end;
+
+procedure TFRM_CATEGORIAS.btnListarClick(Sender: TObject);
+begin
+  Listar;
+end;
+
+procedure TFRM_CATEGORIAS.btnNovoClick(Sender: TObject);
+begin
+  Novo;
+  HabilitarControles(opNovo);
+end;
+
+procedure TFRM_CATEGORIAS.btnPesquisarClick(Sender: TObject);
+begin
+  Pesquisar;
+end;
+
+procedure TFRM_CATEGORIAS.Alterar;
+var
+  oCategoria: TCategoria;
+  oCategoriaController: TCategoriaController;
+  sErro: String;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  oCategoria := TCategoria.Create;
+  try
+    with oCategoria do
+    begin
+      Codigo := StrToIntDef(edtCodigo.Text, 0);
+      Descricao := edtDescricao.Text;
+
+    end;
+    if oCategoriaController.Alterar(oCategoria, sErro) = False then
+      raise Exception.Create(sErro);
+  finally
+    FreeAndNil(oCategoriaController);
+    FreeAndNil(oCategoria);
+  end;
+
+end;
+
+procedure TFRM_CATEGORIAS.CarregarProduto;
+{ Criando os Objetos em todas as Funções para destruir em Seguida. }
+var
+  oCategoria: TCategoria;
+  oCategoriaController: TCategoriaController;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  oCategoria := TCategoria.Create;
+
+  try
+    oCategoriaController.CarregarCategoria(oCategoria,
+      DS_CATEGORIA.DataSet.FieldByName('CODIGO').AsInteger);
+    with oCategoria do
+    begin
+      edtCodigo.Text := IntToStr(Codigo);
+      edtDescricao.Text := Descricao;
+
+    end;
+  finally
+    FreeAndNil(oCategoriaController);
+    FreeAndNil(oCategoria);
+  end;
+end;
+
+procedure TFRM_CATEGORIAS.Configuracoes;
+begin
+  { Ativando as Telas }
+  tbProdutos.TabVisible := False;
+  tb_Dados.TabVisible := False;
+  pgPrincipal.ActivePage := tbProdutos;
+end;
+
+procedure TFRM_CATEGORIAS.DBGrid1DblClick(Sender: TObject);
+begin
+  Detalhar;
+end;
+
+procedure TFRM_CATEGORIAS.Detalhar;
+begin
+  CarregarProduto;
+  HabilitarControles(opNavegar);
+
+  FOperacao := opNavegar;
+  { Apenas navegar nos dados, sem edição
+    (Captura o ID do produto que esta na tela de pesquisa para trazer na aba de dados }
+  pgPrincipal.ActivePage := tb_Dados;
+end;
+
+procedure TFRM_CATEGORIAS.Excluir;
+var
+  oCategoria: TCategoria;
+  oCategoriaController: TCategoriaController;
+  sErro: String;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  oCategoria := TCategoria.Create;
+  try
+    with oCategoria do
+    begin
+      Codigo := StrToIntDef(edtCodigo.Text, 0);
+    end;
+    if MessageDlg('Deseja realmente realizar a operação', mtConfirmation,
+      [mbYes, mbNo], 0) = IDYES then
+        if oCategoriaController.ValidaExclusao(oCategoria) then
+        begin
+              if oCategoriaController.Excluir(oCategoria) then
+              begin
+                  ShowMessage('Categoria excluida com sucesso');
+              end
+              else
+              begin
+                   ShowMessage('Categoria não foi excluida, entre em contato com o suporte');
+              end;
+        end
+        else
+        begin
+             ShowMessage('Categoria não pode ser excluida');
+        end;
+
+  finally
+    FreeAndNil(oCategoriaController);
+  end;
+end;
+
+procedure TFRM_CATEGORIAS.FormCreate(Sender: TObject);
+begin
+  DS_CATEGORIA.DataSet := DM_CATEGORIA.cdsPesquisar;
+
+end;
+
+procedure TFRM_CATEGORIAS.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    Key := #0;
+    Perform(WM_NEXTDLGCTL, 0, 0);
+  end;
+end;
+
+procedure TFRM_CATEGORIAS.FormShow(Sender: TObject);
+begin
+  DM_CATEGORIA.cdsPesquisar.Close;
+  DM_CATEGORIA.cdsPesquisar.Open;
+
+  Configuracoes;
+  // chama o metodo de configurações e ativa as telas.
+end;
+
+procedure TFRM_CATEGORIAS.Gravar;
+var
+  oCategoriaController: TCategoriaController;
+  // vVariavel : String;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  try
+    // ShowMessage(vVariavel);
+    case FOperacao of
+      // verifica qual valor esta dentro de FOperacao e seleciono Insert ou Update
+      opNovo:
+        Inserir;
+      opAlterar:
+        Alterar;
+    end;
+    // oCategoriaController.Pesquisar(edtPesquisar.Text);
+  finally
+    FreeAndNil(oCategoriaController);
+  end;
+
+end;
+
+procedure TFRM_CATEGORIAS.HabilitarControles(aOperacao: TOperacao);
+begin
+  // Desabilitando e habilitando opções
+  case aOperacao of
+    opNovo:
+      begin
+        edtDescricao.Clear;
+        edtCodigo.Clear;
+        edtDescricao.Enabled := True;
+
+        btnListar.Enabled := False;
+        btnFechar.Enabled := False;
+        btnAlterar.Enabled := False;
+        btnGravar.Enabled := True;
+        btnCancelar.Enabled := True;
+      end;
+
+    opAlterar:
+      begin
+        edtDescricao.Enabled := True;
+
+        btnListar.Enabled := False;
+        btnFechar.Enabled := False;
+        btnAlterar.Enabled := False;
+        btnGravar.Enabled := True;
+        btnCancelar.Enabled := True;
+      end;
+    opNavegar:
+      begin
+        edtDescricao.Enabled := False;
+        btnListar.Enabled := True;
+        btnFechar.Enabled := True;
+        btnAlterar.Enabled := True;
+        btnGravar.Enabled := False;
+        btnCancelar.Enabled := False;
+      end;
+  end;
+end;
+
+procedure TFRM_CATEGORIAS.Inserir;
+var
+  oCategoria: TCategoria;
+  oCategoriaController: TCategoriaController;
+  sErro: String;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  oCategoria := TCategoria.Create;
+  try
+    with oCategoria do
+    begin
+
+      Descricao := edtDescricao.Text;
+
+    end;
+    if oCategoriaController.Inserir(oCategoria, sErro) = False then
+      raise Exception.Create(sErro);
+
+  finally
+    FreeAndNil(oCategoriaController);
+    FreeAndNil(oCategoria);
+  end;
+
+end;
+
+procedure TFRM_CATEGORIAS.Listar;
+begin
+  DM_CATEGORIA.cdsPesquisar.Close;
+  DM_CATEGORIA.cdsPesquisar.Open;
+  pgPrincipal.ActivePage := tbProdutos;
+end;
+
+procedure TFRM_CATEGORIAS.Novo;
+begin
+  FOperacao := opNovo;
+  pgPrincipal.ActivePage := tb_Dados;
+end;
+
+procedure TFRM_CATEGORIAS.Pesquisar;
+var
+  oCategoriaController: TCategoriaController;
+begin
+  oCategoriaController := TCategoriaController.Create;
+  try
+    oCategoriaController.Pesquisar(edtPesquisar.Text);
+    // Passa o valor do edt para o metodo Pesquisa
+  finally
+    FreeAndNil(oCategoriaController);
+    // Limpando da memória
+  end;
+
+end;
+
+end.

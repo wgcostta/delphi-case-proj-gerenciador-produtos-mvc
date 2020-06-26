@@ -1,0 +1,112 @@
+unit DM_CATEGORIAS;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.FMTBcd, Data.DB, Datasnap.DBClient,
+  Datasnap.Provider, Data.SqlExpr, DM_CONEXAO, uCategoriaModel;
+
+type
+  TDM_CATEGORIA = class(TDataModule)
+    sqlPesquisar: TSQLDataSet;
+    dspPesquisar: TDataSetProvider;
+    cdsPesquisar: TClientDataSet;
+    cdsPesquisarCODIGO: TIntegerField;
+    cdsPesquisarDESCRICAO: TStringField;
+    sqlPesquisarCODIGO: TIntegerField;
+    sqlPesquisarDESCRICAO: TStringField;
+    CDS_CATEGORIAS: TClientDataSet;
+    DSP_CATEGORIAS: TDataSetProvider;
+    SQL_CATEGORIAS: TSQLDataSet;
+    SQL_CATEGORIASCODIGO: TIntegerField;
+    SQL_CATEGORIASDESCRICAO: TStringField;
+    CDS_CATEGORIASCODIGO: TIntegerField;
+    CDS_CATEGORIASDESCRICAO: TStringField;
+    SQL_GERAL: TSQLDataSet;
+    DSP_GERAL: TDataSetProvider;
+    CDS_GERAL: TClientDataSet;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure Pesquisar(sNome: String);
+    procedure CarregarCategoria(oCategoria: TCategoria; iCodigo: Integer);
+
+
+    {
+     Enviado para o Geral
+    function Executar(sSQLGeral:String ; out sErro: String): Boolean;}
+
+
+  end;
+
+var
+  DM_CATEGORIA: TDM_CATEGORIA;
+
+implementation
+
+//var   sSQLGeral :  String;
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+{ TDM_CATEGORIA }
+ {
+ Era o Principal
+function TDM_CATEGORIA.Executar(sSQLGeral: String;
+  out sErro: String): Boolean;
+begin
+  DM_CATEGORIA.SQL_GERAL.CommandText := sSQLGeral;
+  try
+      DM_CATEGORIA.SQL_GERAL.ExecSQL();
+      Result := True;
+
+      except
+      on E: Exception do
+      begin
+        sErro := 'Ocorreu um erro ao Inserir/Atualizar as Informações:' + sLineBreak +
+          E.Message;
+        Result := False;
+      end;
+    end;
+
+
+end;    }
+
+procedure TDM_CATEGORIA.CarregarCategoria(oCategoria: TCategoria;
+  iCodigo: Integer);
+var
+  sqlCategoria: TSQLDataSet;
+begin
+  sqlCategoria := TSQLDataSet.Create(nil);
+  try
+    with sqlCategoria do
+    begin
+      SQLConnection := dmConexao.sqlConexao;
+      CommandText := 'select * from Categoria where (codigo=' +
+        IntToStr(iCodigo) + ')';
+      Open;
+      with oCategoria do
+      begin
+        Codigo := FieldByName('CODIGO').AsInteger;
+        Descricao := FieldByName('DESCRICAO').AsString;
+
+      end;
+    end;
+
+  finally
+    FreeAndNil(sqlCategoria);
+  end;
+end;
+
+procedure TDM_CATEGORIA.Pesquisar(sNome: String);
+begin
+  if cdsPesquisar.Active then
+    cdsPesquisar.Close;
+  // cdsPesquisar.Params[0]     indice do parametro zero, ou por nome:
+  cdsPesquisar.ParamByName('DESCRICAO_CAT').AsString := '%' + sNome + '%';
+  cdsPesquisar.Open;
+  cdsPesquisar.First;
+
+end;
+
+end.

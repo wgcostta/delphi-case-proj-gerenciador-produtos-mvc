@@ -1,0 +1,124 @@
+unit UN_MANUTENCAO_PRODUTOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, System.UITypes,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.ComCtrls,
+  Vcl.StdCtrls, Vcl.DBCtrls, DM_CATEGORIAS, DM_PRODUTOS, Data.DB, DM_CONEXAO,
+  uManutencaoProdutosController, uProdutoModel;
+
+type
+  TFRM_MANUTENCAO_PRODUTOS = class(TForm)
+    StatusBar1: TStatusBar;
+    Timer1: TTimer;
+    edtMargem: TEdit;
+    btnConfirmar: TButton;
+    DS_CATEGORIA: TDataSource;
+    RadioGroup1: TRadioGroup;
+    Panel1: TPanel;
+    Label1: TLabel;
+    Panel2: TPanel;
+    Label2: TLabel;
+    cbCategoria: TDBLookupComboBox;
+    procedure Timer1Timer(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnConfirmarClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure AlteraMargem;
+  public
+    { Public declarations }
+  end;
+
+var
+  FRM_MANUTENCAO_PRODUTOS: TFRM_MANUTENCAO_PRODUTOS;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFRM_MANUTENCAO_PRODUTOS.AlteraMargem;
+var
+  oManutencaoProdutos: TManutencaoProdutos;
+  oProduto: TProduto;
+  sMargem : String;
+  sCategoria:String;
+begin
+  oManutencaoProdutos := TManutencaoProdutos.Create;
+  oProduto := TProduto.Create;
+  try
+    sMargem := edtMargem.Text;
+    sCategoria := VarToStr(cbCategoria.KeyValue);
+    if sCategoria='' then
+        sCategoria := '0';
+    if edtMargem.Text <> '' then
+    begin
+      if RadioGroup1.ItemIndex = 0 then
+        if edtMargem.Text < '10' then
+        begin
+            edtMargem.Text := '0' + edtMargem.Text;
+        end;
+        if oManutencaoProdutos.AumentarMargem(sCategoria,sMargem) then
+         begin
+          ShowMessage('Operação realizada com sucesso');
+        end
+        else
+        begin
+          ShowMessage
+            ('Não foi possível realizar a operação, entre em contato com o suporte');
+        end;
+      if RadioGroup1.ItemIndex = 1 then
+        if edtMargem.Text < '10' then
+        begin
+            edtMargem.Text := '0' + edtMargem.Text;
+        end;
+        if oManutencaoProdutos.DiminuirMargem(sCategoria,sMargem) then
+        begin
+          ShowMessage('Operação realizada com sucesso');
+        end
+        else
+        begin
+          ShowMessage
+            ('Não foi possível realizar a operação, entre em contato com o suporte');
+        end;
+
+      edtMargem.Text := '';
+    end;
+  finally
+    FreeAndNil(oManutencaoProdutos);
+  end;
+
+end;
+
+procedure TFRM_MANUTENCAO_PRODUTOS.btnConfirmarClick(Sender: TObject);
+begin
+    if MessageDlg('Deseja realmente realizar a operação', mtConfirmation,
+      [mbYes, mbNo], 0) = IDYES then
+
+    AlteraMargem;
+
+end;
+
+procedure TFRM_MANUTENCAO_PRODUTOS.FormCreate(Sender: TObject);
+begin
+  DS_CATEGORIA.DataSet := DM_CATEGORIA.CDS_CATEGORIAS;
+end;
+
+procedure TFRM_MANUTENCAO_PRODUTOS.FormShow(Sender: TObject);
+begin
+  DM_CATEGORIA.CDS_CATEGORIAS.Close;
+  DM_CATEGORIA.CDS_CATEGORIAS.Open;
+
+end;
+
+procedure TFRM_MANUTENCAO_PRODUTOS.Timer1Timer(Sender: TObject);
+begin
+  StatusBar1.Panels[3].Text :=
+    FormatDateTime('dddd , dd " de " mmmm "de" yyyy', Now);
+  StatusBar1.Panels[4].Text := 'Hora: ' + FormatDateTime('hh:mm:ss', Now);
+end;
+
+end.

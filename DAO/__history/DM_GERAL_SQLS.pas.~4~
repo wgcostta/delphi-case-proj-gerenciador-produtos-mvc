@@ -1,0 +1,47 @@
+unit DM_GERAL_SQLS;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, DM_CONEXAO, Data.FMTBcd, Data.SqlExpr,
+  Datasnap.Provider, Data.DB, Datasnap.DBClient;
+
+type
+  TDM_GERAL = class(TDataModule)
+    CDS_GERAL: TClientDataSet;
+    DSP_GERAL: TDataSetProvider;
+    SQL_GERAL: TSQLDataSet;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    function Executar(sSQLGeral: String; out sErro: String): Boolean;
+  end;
+
+var
+  DM_GERAL: TDM_GERAL;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+{ TDM_GERAL }
+
+function TDM_GERAL.Executar(sSQLGeral: String; out sErro: String): Boolean;
+begin
+  DM_GERAL.SQL_GERAL.CommandText := sSQLGeral;
+  try
+    DM_GERAL.SQL_GERAL.ExecSQL();
+    Result := True;
+
+  except
+    on E: Exception do
+    begin
+      sErro := 'Ocorreu um erro ao Inserir/Atualizar as Informações:' +
+        sLineBreak + E.Message;
+      Result := False;
+    end;
+  end;
+end;
+
+end.

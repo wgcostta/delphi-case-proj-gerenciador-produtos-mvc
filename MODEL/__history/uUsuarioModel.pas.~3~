@@ -1,0 +1,60 @@
+unit uUsuarioModel;
+
+interface
+         uses System.SysUtils;
+         type
+            TUsuario = class
+            public
+                  property Codigo: Integer read getCodigo write setCodigo;
+                  property Usuario: String read getUsuario write setUsuario;
+                  property Senha: String read getSenha write setSenha;
+  private
+  private
+  private
+  private
+  private
+  private
+    function getCodigo: Integer;
+    function getSenha: String;
+    function getUsuario: String;
+    procedure setCodigo(const Value: Integer);
+    procedure setSenha(const Value: String);
+    procedure setUsuario(const Value: String);
+            end;
+implementation
+
+{ TUsuario }
+
+function TUsuario.getCodigo: Integer;
+begin
+
+end;
+
+function TUsuario.getSenha: String;
+begin
+
+end;
+
+function TUsuario.getUsuario: String;
+begin
+
+end;
+
+procedure TUsuario.setCodigo(const Value: Integer);
+begin
+
+end;
+
+procedure TUsuario.setSenha(const Value: String);
+begin
+
+end;
+
+procedure TUsuario.setUsuario(const Value: String);
+begin
+if Value = EmptyStr then
+    raise EArgumentException.Create('''Usuario''precisa ser preenchido!');
+  getDescricao := Value;
+end;
+
+end.

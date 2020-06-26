@@ -1,0 +1,113 @@
+object FRM_PRINCIPAL: TFRM_PRINCIPAL
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  BorderWidth = 5
+  Caption = 'Gerenciador de Produtos'
+  ClientHeight = 496
+  ClientWidth = 934
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 477
+    Width = 934
+    Height = 19
+    Panels = <
+      item
+        Alignment = taCenter
+        Text = 'Sistema Gerencial de Clientes'
+        Width = 180
+      end
+      item
+        Alignment = taCenter
+        Text = 'Desenvolvido por Wagner Costa'
+        Width = 180
+      end
+      item
+        Text = 'Usuario: VSM'
+        Width = 90
+      end
+      item
+        Alignment = taCenter
+        Text = 'Data:'
+        Width = 200
+      end
+      item
+        Alignment = taCenter
+        Text = 'Hora:'
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 934
+    Height = 477
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    ExplicitTop = 404
+    ExplicitHeight = 73
+    object Image1: TImage
+      Left = 240
+      Top = 216
+      Width = 105
+      Height = 105
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 8
+    Top = 32
+    object Cadastrar1: TMenuItem
+      Caption = 'Cadastrar'
+      object Produtos1: TMenuItem
+        Caption = 'Produtos'
+        OnClick = Produtos1Click
+      end
+      object Categorias1: TMenuItem
+        Caption = 'Categorias'
+        OnClick = Categorias1Click
+      end
+      object Usurios1: TMenuItem
+        Caption = 'Usu'#225'rios'
+        OnClick = Usurios1Click
+      end
+    end
+    object Gerencial1: TMenuItem
+      Caption = 'Gerencial'
+      object ManutenoemProdutos1: TMenuItem
+        Caption = 'Manuten'#231#227'o em Produtos'
+        OnClick = ManutenoemProdutos1Click
+      end
+    end
+    object Relatrios1: TMenuItem
+      Caption = 'Relat'#243'rios'
+      object RelatriodeProdutos1: TMenuItem
+        Caption = 'Relat'#243'rio de Produtos'
+        OnClick = RelatriodeProdutos1Click
+      end
+    end
+    object Sistema1: TMenuItem
+      Caption = 'Sistema'
+      object Sair1: TMenuItem
+        Caption = 'Sair'
+        OnClick = Sair1Click
+      end
+    end
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 56
+    Top = 32
+  end
+end

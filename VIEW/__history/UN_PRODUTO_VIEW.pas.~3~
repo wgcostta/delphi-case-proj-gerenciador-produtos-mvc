@@ -1,0 +1,74 @@
+unit UN_PRODUTO_VIEW;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.ExtCtrls, Vcl.StdCtrls,
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls;
+
+type
+  TUN_PROD = class(TForm)
+    StatusBar1: TStatusBar;
+    pgPrincipal: TPageControl;
+    tb_Cadastro: TTabSheet;
+    DBGrid1: TDBGrid;
+    Panel3: TPanel;
+    btnNovo: TButton;
+    btnEditar: TButton;
+    btnExcluir: TButton;
+    tb_Dados: TTabSheet;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    edtEndereco: TEdit;
+    cbTipo: TComboBox;
+    edtCelular: TEdit;
+    edtCodigo2: TLabeledEdit;
+    edtNome: TLabeledEdit;
+    Panel4: TPanel;
+    btnListar: TButton;
+    btnAlterar: TButton;
+    btnGravar: TButton;
+    btnCancelar: TButton;
+    edtCodigo: TEdit;
+    Panel1: TPanel;
+    btnFechar: TButton;
+    Panel2: TPanel;
+    btnPesquisar: TButton;
+    edtPesquisar: TLabeledEdit;
+    dsPesquisa: TDataSource;
+    Timer1: TTimer;
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  UN_PROD: TUN_PROD;
+
+implementation
+
+{$R *.dfm}
+
+procedure TUN_PROD.Timer1Timer(Sender: TObject);
+begin
+//    StatusBar1.Panels[3].Text := FormatDateTime('dddd , dd " de " mmmm "de" yyyy',Now);
+    // FormatDateTime('dd/mm/yyyy',Now);
+    // FormatDateTime('dddd' , dd " de " 'mmmm' "de" 'yyyy',Now)
+//    StatusBar1.Panels[4].Text := 'Hora: ' +  FormatDateTime('hh:mm:ss',Now);
+end;
+
+end.

@@ -1,0 +1,67 @@
+unit uProdutoController;
+
+     // Classe Controle    servirá apenas para intermediar.
+interface
+  uses  uProdutoModel, // DM_CLIENTES,
+   System.SysUtils;
+  type
+  TProdutoController = class
+    public
+    constructor Create;
+    destructor Destroy; override; // sobrescrevendo o metodo
+    procedure CarregarProduto(oProduto: TProduto; iCodigo: Integer);
+    procedure Pesquisar(sNome : String);
+    function Inserir(oProduto: TProduto; var sErro: String): Boolean;
+    function Alterar(oProduto: TProduto; var sErro: String): Boolean;
+    function Excluir(iCodigo: Integer; var sErro: String): Boolean;
+  end;
+
+implementation
+
+{ TProdutoController }
+
+
+
+function TProdutoController.Alterar(oProduto: TProduto;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Alterar(oProduto,sErro);
+end;
+
+procedure TProdutoController.CarregarProduto(oProduto: TProduto;
+  iCodigo: Integer);
+begin
+    dmClientes.CarregarCLiente(oProduto, iCodigo);
+end;
+
+constructor TProdutoController.Create;
+begin
+    //dmClientes := TdmClientes.Create(nil);
+    // mudando para a view (OnCreate), dando Access Violation
+end;
+
+destructor TProdutoController.Destroy;
+begin
+  //FreeAndNil(dmClientes);
+  inherited;
+end;
+
+function TProdutoController.Excluir(iCodigo: Integer;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Excluir(iCodigo,sErro);
+end;
+
+function TProdutoController.Inserir(oProduto: TProduto;
+  var sErro: String): Boolean;
+begin
+    Result := dmClientes.Inserir(oProduto,sErro);
+end;
+
+procedure TProdutoController.Pesquisar(sNome: String);
+begin
+    dmClientes.Pesquisar(sNome);
+end;
+
+end.
+

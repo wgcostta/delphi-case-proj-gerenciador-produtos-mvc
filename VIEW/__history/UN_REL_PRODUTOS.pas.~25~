@@ -1,0 +1,133 @@
+unit UN_REL_PRODUTOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.FMTBcd, Data.DB, Data.SqlExpr,
+  SQLTimSt,
+
+  RLReport, DM_CONEXAO, Vcl.StdCtrls, Vcl.Mask, DM_GERAL_SQLS, Vcl.ExtCtrls;
+
+type
+  TFRM_REL_PRODUTOS = class(TForm)
+    RLReport1: TRLReport;
+    DS_REL_PRODUTOS: TDataSource;
+    SQL_REL_PRODUTOS: TSQLQuery;
+    RLBand2: TRLBand;
+    RLLabel1: TRLLabel;
+    RLGroup1: TRLGroup;
+    RLLabel2: TRLLabel;
+    RLDBText1: TRLDBText;
+    RLLabel5: TRLLabel;
+    RLDBText4: TRLDBText;
+    RLDBText5: TRLDBText;
+    RLLabel6: TRLLabel;
+    RLLabel7: TRLLabel;
+    RLDBText6: TRLDBText;
+    RLBand4: TRLBand;
+    RLLabel3: TRLLabel;
+    RLDBText9: TRLDBText;
+    RLBand1: TRLBand;
+    RLSystemInfo1: TRLSystemInfo;
+    RLDBText2: TRLDBText;
+    RLLabel4: TRLLabel;
+    RLLabel8: TRLLabel;
+    Button1: TButton;
+    edtPrecoMax: TEdit;
+    MaskEdit1: TMaskEdit;
+    edtMaskDataIni: TMaskEdit;
+    edtMaskDataFim: TMaskEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    RLLabel9: TRLLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Imprimir;
+    procedure Preencher;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FRM_REL_PRODUTOS: TFRM_REL_PRODUTOS;
+
+implementation
+
+Const
+  sSQLGeral = 'SELECT ' + ' PP.CODIGO, ' + ' PP.DESCRICAO, ' + ' CC.DESCRICAO, '
+    + ' PP.PRECO, ' + ' PP.ULTIMO_PRECO, ' + ' PP.DATA_CADASTRO, ' +
+    ' PP.DATA_ATUALIZACAO, ' + ' PP.SITUACAO ' + ' FROM ' + ' PRODUTO PP ' +
+    ' INNER JOIN ' + ' CATEGORIA CC ' + ' ON(PP.CODIGO_CATEGORIA=CC.CODIGO) ' +
+    ' WHERE ' + ' PRECO < %s ' + 'AND DATA_CADASTRO BETWEEN %s AND %s'
+
+    ;
+
+{$R *.dfm}
+
+procedure TFRM_REL_PRODUTOS.Button1Click(Sender: TObject);
+
+begin
+  Preencher;
+  Imprimir;
+end;
+
+procedure TFRM_REL_PRODUTOS.FormCreate(Sender: TObject);
+begin
+  DS_REL_PRODUTOS.DataSet := SQL_REL_PRODUTOS;
+end;
+
+procedure TFRM_REL_PRODUTOS.Imprimir;
+begin
+  RLReport1.Preview()
+end;
+
+procedure TFRM_REL_PRODUTOS.Preencher;
+var
+  vDataIni : TDate;
+  vPDataIni : string;
+  vDataFim : TDate;
+  vPDataFim : string;
+  vValor : String;
+begin
+
+  if (edtMaskDataIni.EditText = '__/__/____') or (edtMaskDataIni.EditText='__/__/____') then
+      ShowMessage('Informe uma data válida');
+      Abort;
+
+  vDataIni := StrToDate(edtMaskDataIni.EditText);
+  vPDataIni := FormatdateTime('yyyy""mm""dd', vDataIni);
+  vDataFim := StrToDate(edtMaskDataFim.EditText);
+  vPDataFim := FormatdateTime('yyyy""mm""dd', vDataFim);
+  vValor   := edtPrecoMax.Text;
+
+  if edtPrecoMax.Text = EmptyStr then
+  begin
+       vValor := '99999'
+  end;
+  if vPDataIni < '20000101' then
+  begin
+    ShowMessage('Informe uma Data Inicial!');
+    Exit;
+  end;
+  if vPDataFim < '20000101' then
+  begin
+    ShowMessage('Informe uma Data Final!');
+    Exit;
+  end;
+
+  SQL_REL_PRODUTOS.Close;
+  SQL_REL_PRODUTOS.sql.add(Format(sSQLGeral, [vValor, vPDataIni, vPDataFim]
+  ));
+  SQL_REL_PRODUTOS.Open;
+
+end;
+
+end.

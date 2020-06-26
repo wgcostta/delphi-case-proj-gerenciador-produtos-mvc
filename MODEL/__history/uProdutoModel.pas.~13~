@@ -1,0 +1,100 @@
+unit uProdutoModel;
+
+interface
+     uses System.SysUtils;
+type
+    TProduto = class
+               private
+    getDescricao: String;
+
+    getCodigo: Integer;
+
+    getPreco: String;
+    getCodigoCategoria: Integer;
+    getDataAtualizacao: String;
+    getDataCadastro: String;
+    getSituacao: String;
+    getUltimoPreco: Currency;
+
+    procedure setCodigo(const Value: Integer);
+
+    procedure SetDescricao(const Value: String);
+    procedure setPreco(const Value: String);
+
+    procedure setCodigoCategoria(const Value: Integer);
+    procedure setDataAtualizacao(const Value: String);
+    procedure setDataCadastro(const Value: String);
+    procedure setSituacao(const Value: String);
+    procedure setUltimoPreco(const Value: Currency);
+
+               protected
+                 { protected declarations }
+ public
+    property Codigo: Integer read getCodigo write setCodigo;
+    property Descricao: String read getDescricao write SetDescricao;
+    property Preco: String read getPreco write setPreco;
+
+
+    property CodigoCategoria: Integer read getCodigoCategoria write  setCodigoCategoria;
+    property UltimoPreco : Currency read getUltimoPreco write setUltimoPreco;
+    property DataCadastro : String read getDataCadastro write setDataCadastro;
+    property DataAtualizacao : String read getDataAtualizacao write setDataAtualizacao;
+    property Situacao : String read getSituacao write setSituacao;
+
+               published
+                 { published declarations }
+               end;
+
+implementation
+
+{ TCliente }
+
+
+
+
+
+procedure TProduto.setCodigo(const Value: Integer);
+begin
+
+end;
+
+procedure TProduto.setCodigoCategoria(const Value: Integer);
+begin
+
+end;
+
+procedure TProduto.setDataAtualizacao(const Value: String);
+begin
+
+end;
+
+procedure TProduto.setDataCadastro(const Value: String);
+begin
+
+end;
+
+
+procedure TProduto.SetDescricao(const Value: String);
+begin
+  if Value = EmptyStr then
+    raise EArgumentException.Create('''Nome''precisa ser preenchido!');
+  getDescricao := Value;
+end;
+
+procedure TProduto.setPreco(const Value: String);
+begin
+
+end;
+
+procedure TProduto.setSituacao(const Value: String);
+begin
+
+end;
+
+procedure TProduto.setUltimoPreco(const Value: Currency);
+begin
+
+end;
+
+end.
+

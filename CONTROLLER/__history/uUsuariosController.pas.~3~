@@ -1,0 +1,64 @@
+unit uUsuariosController;
+
+interface
+
+uses uUsuarioModel,
+  System.SysUtils, DM_USUARIOS;
+
+type
+  TUsuarioController = class
+  public
+    constructor Create;
+    destructor Destroy; override; // sobrescrevendo o metodo
+    procedure CarregarUsuario(oUsuario: TUsuario; iCodigo: Integer);
+    procedure Pesquisar(sNome: String);
+    function Inserir(oUsuario: TUsuario; var sErro: String): Boolean;
+    function Alterar(oUsuario: TUsuario; var sErro: String): Boolean;
+    function Excluir(iCodigo: Integer; var sErro: String): Boolean;
+  end;
+
+implementation
+
+{ TUsuarioController }
+
+function TUsuarioController.Alterar(oUsuario: TUsuario;
+  var sErro: String): Boolean;
+begin
+  Result := DM_Usuario.Alterar(oUsuario, sErro);
+end;
+
+procedure TUsuarioController.CarregarUsuario(oUsuario: TUsuario;
+  iCodigo: Integer);
+begin
+  DM_Usuario.CarregarUsuario(oUsuario, iCodigo);
+end;
+
+constructor TUsuarioController.Create;
+begin
+
+end;
+
+destructor TUsuarioController.Destroy;
+begin
+
+  inherited;
+end;
+
+function TUsuarioController.Excluir(iCodigo: Integer;
+  var sErro: String): Boolean;
+begin
+  Result := DM_Usuario.Excluir(iCodigo, sErro);
+end;
+
+function TUsuarioController.Inserir(oUsuario: TUsuario;
+  var sErro: String): Boolean;
+begin
+  Result := DM_Usuario.Inserir(oUsuario, sErro);
+end;
+
+procedure TUsuarioController.Pesquisar(sNome: String);
+begin
+  DM_Usuario.Pesquisar(sNome);
+end;
+
+end.

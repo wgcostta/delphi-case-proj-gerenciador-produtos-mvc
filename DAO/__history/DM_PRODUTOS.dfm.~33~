@@ -1,0 +1,198 @@
+object DM_PRODUTO: TDM_PRODUTO
+  OldCreateOrder = False
+  Height = 254
+  Width = 604
+  object sqlPesquisar: TSQLDataSet
+    CommandText = 
+      'SELECT '#13#10'CODIGO,'#13#10'DESCRICAO,'#13#10'CODIGO_CATEGORIA,'#13#10'PRECO,'#13#10'ULTIMO_' +
+      'PRECO'#13#10'DATA_CADASTRO,'#13#10'DATA_ATUALIZACAO,'#13#10'SITUACAO'#13#10'FROM'#13#10'PRODUT' +
+      'O'#13#10'WHERE'#13#10'(DESCRICAO LIKE :DESCRICAO)'
+    MaxBlobSize = -1
+    Params = <
+      item
+        DataType = ftString
+        Name = 'DESCRICAO'
+        ParamType = ptInput
+      end>
+    SQLConnection = dmConexao.sqlConexao
+    Left = 56
+    Top = 32
+  end
+  object dspPesquisar: TDataSetProvider
+    DataSet = sqlPesquisar
+    UpdateMode = upWhereKeyOnly
+    Left = 56
+    Top = 112
+  end
+  object cdsPesquisar: TClientDataSet
+    Aggregates = <>
+    Params = <
+      item
+        DataType = ftString
+        Name = 'DESCRICAO'
+        ParamType = ptInput
+      end>
+    ProviderName = 'dspPesquisar'
+    AfterPost = cdsPesquisarAfterPost
+    Left = 56
+    Top = 184
+    object cdsPesquisarCODIGO: TIntegerField
+      FieldName = 'CODIGO'
+      Required = True
+    end
+    object cdsPesquisarDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Required = True
+      Size = 100
+    end
+    object cdsPesquisarCODIGO_CATEGORIA: TIntegerField
+      FieldName = 'CODIGO_CATEGORIA'
+      Required = True
+    end
+    object cdsPesquisarPRECO: TSingleField
+      FieldName = 'PRECO'
+      Required = True
+    end
+    object cdsPesquisarDATA_CADASTRO: TSingleField
+      FieldName = 'DATA_CADASTRO'
+      Required = True
+    end
+    object cdsPesquisarDATA_ATUALIZACAO: TDateField
+      FieldName = 'DATA_ATUALIZACAO'
+      Required = True
+    end
+    object cdsPesquisarSITUACAO: TStringField
+      FieldName = 'SITUACAO'
+      Required = True
+      Size = 10
+    end
+  end
+  object SQL_PRODUTOS: TSQLDataSet
+    CommandText = 'SELECT '#13#10'*'#13#10'FROM'#13#10'PRODUTO'#13#10'ORDER BY'#13#10'CODIGO'
+    MaxBlobSize = -1
+    Params = <>
+    SQLConnection = dmConexao.sqlConexao
+    Left = 160
+    Top = 32
+    object SQL_PRODUTOSCODIGO: TIntegerField
+      FieldName = 'CODIGO'
+      Required = True
+    end
+    object SQL_PRODUTOSDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Required = True
+      Size = 100
+    end
+    object SQL_PRODUTOSCODIGO_CATEGORIA: TIntegerField
+      FieldName = 'CODIGO_CATEGORIA'
+    end
+    object SQL_PRODUTOSPRECO: TSingleField
+      FieldName = 'PRECO'
+    end
+    object SQL_PRODUTOSULTIMO_PRECO: TSingleField
+      FieldName = 'ULTIMO_PRECO'
+    end
+    object SQL_PRODUTOSDATA_CADASTRO: TDateField
+      FieldName = 'DATA_CADASTRO'
+      Required = True
+    end
+    object SQL_PRODUTOSDATA_ATUALIZACAO: TDateField
+      FieldName = 'DATA_ATUALIZACAO'
+      Required = True
+    end
+    object SQL_PRODUTOSSITUACAO: TStringField
+      FieldName = 'SITUACAO'
+      Required = True
+      Size = 10
+    end
+  end
+  object DSP_PRODUTOS: TDataSetProvider
+    DataSet = SQL_PRODUTOS
+    UpdateMode = upWhereKeyOnly
+    Left = 160
+    Top = 112
+  end
+  object CDS_PRODUTOS: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'DSP_PRODUTOS'
+    AfterPost = CDS_PRODUTOSAfterPost
+    Left = 160
+    Top = 184
+    object CDS_PRODUTOSCODIGO: TIntegerField
+      FieldName = 'CODIGO'
+      Required = True
+    end
+    object CDS_PRODUTOSDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Required = True
+      Size = 100
+    end
+    object CDS_PRODUTOSCODIGO_CATEGORIA: TIntegerField
+      FieldName = 'CODIGO_CATEGORIA'
+    end
+    object CDS_PRODUTOSPRECO: TSingleField
+      FieldName = 'PRECO'
+    end
+    object CDS_PRODUTOSULTIMO_PRECO: TSingleField
+      FieldName = 'ULTIMO_PRECO'
+    end
+    object CDS_PRODUTOSDATA_CADASTRO: TDateField
+      FieldName = 'DATA_CADASTRO'
+      Required = True
+    end
+    object CDS_PRODUTOSDATA_ATUALIZACAO: TDateField
+      FieldName = 'DATA_ATUALIZACAO'
+      Required = True
+    end
+    object CDS_PRODUTOSSITUACAO: TStringField
+      FieldName = 'SITUACAO'
+      Required = True
+      Size = 10
+    end
+  end
+  object SQL_GERAL: TSQLDataSet
+    CommandText = 
+      'update vsm_case.produto'#13#10#9#9'set '#13#10#9#9'ULTIMO_PRECO = PRECO,'#13#10#9#9'DATA' +
+      '_ATUALIZACAO = CURDATE(),'#13#10#9#9'PRECO = ((CONCAT('#39'1.'#39',:MARGEM)*PREC' +
+      'O))'#13#10#9'where '#13#10#9'(CODIGO_CATEGORIA = :CATEGORIA OR CODIGO_CATEGORI' +
+      'A=0)'
+    MaxBlobSize = -1
+    Params = <
+      item
+        DataType = ftUnknown
+        Name = 'MARGEM'
+        ParamType = ptInput
+      end
+      item
+        DataType = ftUnknown
+        Name = 'CATEGORIA'
+        ParamType = ptInput
+      end>
+    SQLConnection = dmConexao.sqlConexao
+    Left = 464
+    Top = 96
+  end
+  object SQL_DIMINUIR_MARGEM: TSQLDataSet
+    CommandText = 
+      'update vsm_case.produto'#13#10#9#9'set '#13#10#9#9'ULTIMO_PRECO = PRECO,'#13#10#9#9'DATA' +
+      '_ATUALIZACAO = CURDATE(),'#13#10#9#9'PRECO = ROUND(((CONCAT('#39'0.'#39',:MARGEM' +
+      ')-1)*-1)*PRECO,2) '#13#10#9'where '#13#10#9'(CODIGO_CATEGORIA = :CATEGORIA OR ' +
+      'CODIGO_CATEGORIA=0)'
+    MaxBlobSize = -1
+    Params = <
+      item
+        DataType = ftInteger
+        Name = 'MARGEM'
+        ParamType = ptInput
+      end
+      item
+        DataType = ftUnknown
+        Name = 'CATEGORIA'
+        ParamType = ptInput
+      end>
+    SQLConnection = dmConexao.sqlConexao
+    Left = 456
+    Top = 32
+  end
+end

@@ -1,0 +1,118 @@
+unit DM_USUARIOS;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.FMTBcd, Data.DB, Datasnap.DBClient,
+  Datasnap.Provider, Data.SqlExpr, DM_CONEXAO, uUsuarioModel;
+
+type
+  TDM_USUARIO = class(TDataModule)
+    sqlPesquisar: TSQLDataSet;
+    dspPesquisar: TDataSetProvider;
+    cdsPesquisar: TClientDataSet;
+    cdsPesquisarCODIGO: TIntegerField;
+    cdsPesquisarDESCRICAO: TStringField;
+    cdsPesquisarCODIGO_CATEGORIA: TIntegerField;
+    cdsPesquisarPRECO: TSingleField;
+    cdsPesquisarDATA_CADASTRO: TSingleField;
+    cdsPesquisarDATA_ATUALIZACAO: TDateField;
+    cdsPesquisarSITUACAO: TStringField;
+    sqlPesquisarUSUARIO: TStringField;
+    sqlPesquisarSENHA: TStringField;
+    CDS_USUARIOS: TClientDataSet;
+    DSP_USUARIOS: TDataSetProvider;
+    SQL_USUARIOS: TSQLDataSet;
+    SQL_USUARIOSCODIGO: TIntegerField;
+    SQL_USUARIOSUSUARIO: TStringField;
+    SQL_USUARIOSSENHA: TStringField;
+    CDS_USUARIOSCODIGO: TIntegerField;
+    CDS_USUARIOSUSUARIO: TStringField;
+    CDS_USUARIOSSENHA: TStringField;
+    SQL_LOGIN: TSQLDataSet;
+    DSP_LOGIN: TDataSetProvider;
+    CDS_LOGIN: TClientDataSet;
+    IntegerField2: TIntegerField;
+    StringField3: TStringField;
+    StringField4: TStringField;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure Pesquisar(sNome: String);
+    procedure CarregarUsuario(oUsuario: TUsuario; iCodigo: Integer);
+
+
+    function Executar(sSQLGeral:String ; out sErro: String): Boolean;
+
+  end;
+
+var
+  DM_USUARIO: TDM_USUARIO;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+{ TDM_USUARIO }
+
+function TDM_USUARIO.Executar(sSQLGeral:String ; out sErro: String): Boolean;
+begin
+  DM_USUARIO.SQL_USUARIOS.CommandText := sSQLGeral;
+  try
+      DM_USUARIO.SQL_USUARIOS.ExecSQL();
+      Result := True;
+
+      except
+      on E: Exception do
+      begin
+        sErro := 'Ocorreu um erro ao Inserir/Atualizar as Informações:' + sLineBreak +
+          E.Message;
+        Result := False;
+      end;
+    end;
+
+
+end;
+
+procedure TDM_USUARIO.CarregarUsuario(oUsuario: TUsuario; iCodigo: Integer);
+var
+  sqlUsuario: TSQLDataSet;
+begin
+  sqlUsuario := TSQLDataSet.Create(nil);
+  try
+    with sqlUsuario do
+    begin
+      SQLConnection := dmConexao.sqlConexao;
+      CommandText := 'select * from USUARIO where (codigo=' +
+        IntToStr(iCodigo) + ')';
+      Open;
+      with oUsuario do
+      begin
+        Codigo := FieldByName('CODIGO').AsInteger;
+        Usuario := FieldByName('USUARIO').AsString;
+        Senha := FieldByName('SENHA').AsString;
+
+      end;
+    end;
+
+  finally
+    FreeAndNil(sqlUsuario);
+  end;
+end;
+
+
+
+
+
+procedure TDM_USUARIO.Pesquisar(sNome: String);
+begin
+  if cdsPesquisar.Active then
+    cdsPesquisar.Close;
+  cdsPesquisar.ParamByName('USUARIO').AsString := '%' + sNome + '%';
+  cdsPesquisar.Open;
+  cdsPesquisar.First;
+
+end;
+
+end.

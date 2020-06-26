@@ -1,0 +1,40 @@
+unit UN_MANUTENCAO_USUARIOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.ComCtrls;
+
+type
+  TUN_MANUTENCAO_USUARIO = class(TForm)
+    StatusBar1: TStatusBar;
+    Timer1: TTimer;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  UN_MANUTENCAO_USUARIO: TUN_MANUTENCAO_USUARIO;
+
+implementation
+
+{$R *.dfm}
+
+procedure TUN_MANUTENCAO_USUARIO.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+    Close;
+end;
+
+procedure TUN_MANUTENCAO_USUARIO.Timer1Timer(Sender: TObject);
+begin
+      StatusBar1.Panels[3].Text := FormatDateTime('dddd , dd " de " mmmm "de" yyyy',Now);
+    StatusBar1.Panels[4].Text := 'Hora: ' +  FormatDateTime('hh:mm:ss',Now);
+end;
+
+end.

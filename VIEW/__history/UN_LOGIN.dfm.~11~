@@ -1,0 +1,105 @@
+object FRM_LOGIN: TFRM_LOGIN
+  Left = 0
+  Top = 0
+  Caption = 'Gerenciador de Produtos'
+  ClientHeight = 201
+  ClientWidth = 447
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 17
+  object StaticText2: TStaticText
+    Left = 97
+    Top = 59
+    Width = 49
+    Height = 21
+    Caption = 'Usuario'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+  end
+  object edtUsuario: TEdit
+    Left = 152
+    Top = 51
+    Width = 156
+    Height = 25
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+  end
+  object StaticText1: TStaticText
+    Left = 104
+    Top = 86
+    Width = 42
+    Height = 21
+    Caption = 'Senha:'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+  end
+  object edtSenha: TEdit
+    Left = 152
+    Top = 82
+    Width = 156
+    Height = 25
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    PasswordChar = '*'
+    TabOrder = 3
+  end
+  object btnEntrar: TButton
+    Left = 152
+    Top = 113
+    Width = 75
+    Height = 25
+    Caption = #61528
+    Default = True
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Font Awesome 5 Free Regular'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    OnClick = btnEntrarClick
+  end
+  object btnSair: TButton
+    Left = 233
+    Top = 113
+    Width = 75
+    Height = 25
+    Caption = 'Sair'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ModalResult = 2
+    ParentFont = False
+    TabOrder = 5
+    OnClick = btnSairClick
+  end
+end

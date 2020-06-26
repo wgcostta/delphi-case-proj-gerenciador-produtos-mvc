@@ -1,0 +1,44 @@
+unit uManutencaoProdutosController;
+
+interface
+
+uses uProdutoModel, DM_PRODUTOS, System.SysUtils;
+  type
+  TManutencaoProdutos = class
+  private
+
+  public
+
+  function AlterarProdutos(oProdutoModel : TProduto; var sErro: String): Boolean;
+
+  end;
+implementation
+
+{ TManutencaoProdutos }
+
+function TManutencaoProdutos.AlterarProdutos(oProdutoModel : TProduto;
+var
+    sErro: String): Boolean;
+
+var
+    oManutencaoProdutos : TManutencaoProdutos;
+   sSQLGeral : String;
+begin
+      {
+     sSQLGeral :=
+    '  UPDATE vsm_case.PRODUTO SET ULTIMO_PRECO = ' +
+    ' PRECO, DATA_ATUALIZACAO=CURDATE()-1 ' +
+    'WHERE CODIGO=7 ; ' ;
+
+    sSQLGeral := sSQLGeral +
+     ' UPDATE vsm_case.PRODUTO SET PRECO = PRECO + '
+    + oProdutoModel.Preco  +
+     ';' ;   }
+    {DM_PRODUTO.cdsPesquisar.Close;
+    DM_PRODUTO.cdsPesquisarPRECO :=  uMargem;
+    DM_PRODUTO.cdsPesquisar.Open;
+    DM_PRODUTO.cdsPesquisar.Post;   }
+    Result := DM_PRODUTO.AlterarMargem(oProdutoModel, sErro);
+end;
+
+end.
